@@ -31,12 +31,12 @@ Currently in pprogress:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/yourproject.git
+   git clone https://github.com/lemo-app/lemo-backend.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd yourproject
+   cd lemo-backend
    ```
 
 3. Install the dependencies:
