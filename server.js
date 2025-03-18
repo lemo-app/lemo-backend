@@ -7,6 +7,8 @@ require('dotenv').config();
 require('./utils/passport-setup'); // Import the passport setup
 const authRoutes = require('./routes/authRoutes'); // Import the auth routes
 const userRoutes = require('./routes/userRoutes'); // Add this line
+const emailRoutes = require('./routes/emailRoutes'); // Add this line
+const verificationRoutes = require('./routes/verificationRoutes'); // Add this line
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -35,6 +37,10 @@ app.use(express.static('public'));
 app.use('/auth', authRoutes);
 // Use the user routes
 app.use('/users', userRoutes);
+// Use the email routes
+app.use('/email', emailRoutes);
+// Use the verification routes
+app.use('/', verificationRoutes);
 
 // Function to start the server
 const startServer = async () => {

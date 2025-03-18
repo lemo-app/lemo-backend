@@ -1,9 +1,10 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-exports.createUser = async (email, password) => {
+exports.createUser = async (email, password, type) => {
     try {
-        const newUser = new User({ email, password });
+        const newUser = new User({ email, password, type });
         await newUser.save();
         return newUser;
     } catch (error) {
@@ -29,4 +30,8 @@ exports.authenticateUser = async (email, password) => {
         console.log('Error authenticating user:', error);
         throw new Error('Authentication failed');
     }
+};
+
+exports.generateVerificationToken = (userId) => {
+    return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
 };

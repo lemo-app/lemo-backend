@@ -61,6 +61,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['super-admin', 'admin', 'school_manager', 'student'],
         default: 'student'
+    },
+    email_verified: {
+        type: Boolean,
+        default: false
     }
 });
 
