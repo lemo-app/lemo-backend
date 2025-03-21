@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['super-admin', 'admin', 'school_manager', 'student'],
+        enum: ['super_admin', 'admin', 'school_manager', 'student'],
         default: 'student'
     },
     email_verified: {
