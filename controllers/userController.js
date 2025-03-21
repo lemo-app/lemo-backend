@@ -27,11 +27,11 @@ exports.updateUserProfile = async (req, res) => {
         return res.status(401).send('No token provided');
     }
 
-    const { userName, age, gender, type, section, roll_no, full_name, student_id } = req.body;
+    const { userName, age, gender, type, section, roll_no, full_name, student_id, school } = req.body;
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id });
+        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id, school });
 
         if (updatedUser) {
             res.json(updatedUser);

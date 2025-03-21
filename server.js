@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes'); // Import the auth routes
 const userRoutes = require('./routes/userRoutes'); // Add this line
 const emailRoutes = require('./routes/emailRoutes'); // Add this line
 const verificationRoutes = require('./routes/verificationRoutes'); // Add this line
+const schoolRoutes = require('./routes/schoolRoutes'); // Add this line
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -41,6 +42,8 @@ app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
 // Use the verification routes
 app.use('/', verificationRoutes);
+// Use the school routes
+app.use('/schools', schoolRoutes);
 
 // Function to start the server
 const startServer = async () => {

@@ -4,12 +4,16 @@ const jwt = require('jsonwebtoken');
 
 exports.createUser = async (email, password, type) => {
     try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            throw new Error('Email already exists');
+        }
         const newUser = new User({ email, password, type });
         await newUser.save();
         return newUser;
     } catch (error) {
         console.log('Error creating user:', error);
-        throw new Error('User creation failed');
+        throw new Error(error.message || 'User creation failed');
     }
 };
 
@@ -20,6 +24,10 @@ exports.authenticateUser = async (email, password) => {
             throw new Error('Invalid email or password');
         }
         
+        if (!user.email_verified) {
+            throw new Error('User not verified. Please verify your email before logging in');
+        }
+
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             throw new Error('Invalid email or password');
@@ -28,7 +36,7 @@ exports.authenticateUser = async (email, password) => {
         return user;
     } catch (error) {
         console.log('Error authenticating user:', error);
-        throw new Error('Authentication failed');
+        throw new Error(error.message || 'Authentication failed');
     }
 };
 

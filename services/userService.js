@@ -17,3 +17,12 @@ exports.updateUser = async (id, updateData) => {
         throw new Error('Database update failed');
     }
 };
+
+exports.findUserByEmail = async (email) => {
+    try {
+        return await User.findOne({ email });
+    } catch (error) {
+        console.log('Error finding user by email:', error);
+        throw new Error('Database query failed');
+    }
+};

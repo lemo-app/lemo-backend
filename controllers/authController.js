@@ -22,19 +22,21 @@ exports.googleCallback = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-    const { email, password, type } = req.body;
+    const { email, type } = req.body;
+
+    const temp_password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     
     if (!type) {
         return res.status(400).send('User type is required');
     }
 
     try {
-        const newUser = await authService.createUser(email, password, type);
-        const token = authService.generateVerificationToken(newUser.id);
-        const verificationLink = `http://localhost:3001/verify-email?token=${token}`;
+        const newUser = await authService.createUser(email, temp_password, type);
+        const verificationLink = process.env.FRONTEND_VERIFICATION_URL + '/verify-account?email=' + email;
+        const mailBody = `Hey ${type}! Welcome to Lemoapp! Follow these instructions to verify your email! Your temporary password is ${temp_password}. Click this link to verify your email: ${verificationLink}`;
 
         // Send verification email
-        await emailService.sendEmail(email, 'Welcome to Lemoapp! Verify your email', `Welcome to Lemoapp! Click this link to verify your email: ${verificationLink}`);
+        await emailService.sendEmail(email, mailBody);
 
         const jwtToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET || 'your_jwt_secret');
         res.status(201).json({
@@ -45,7 +47,7 @@ exports.signup = async (req, res) => {
             userId: newUser.id,
             userName: newUser.userName,
             type: newUser.type,
-            verificationLink: verificationLink
+            verificationEmail: mailBody
         });
     } catch (error) {
         console.log('Error creating user:', error);
@@ -66,6 +68,6 @@ exports.login = async (req, res) => {
         });
     } catch (error) {
         console.log('Error logging in:', error);
-        res.status(500).send('Error logging in: ' + error.message);
+        res.status(400).send('Error logging in: ' + error.message);
     }
 };

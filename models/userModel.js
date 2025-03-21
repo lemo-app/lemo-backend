@@ -65,6 +65,11 @@ const userSchema = new mongoose.Schema({
     email_verified: {
         type: Boolean,
         default: false
+    },
+    school: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'School',
+        required: false
     }
 });
 
