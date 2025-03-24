@@ -1,5 +1,6 @@
 const schoolService = require('../services/schoolService');
 const userService = require('../services/userService');
+const QRCode = require('qrcode');
 
 exports.createSchool = async (req, res) => {
     const { school_name, address, contact_number, description, start_time, end_time } = req.body;
@@ -94,5 +95,34 @@ exports.connectUserToSchool = async (req, res) => {
     } catch (error) {
         console.log('Error connecting user to school:', error);
         res.status(400).send('Error connecting user to school: ' + error.message);
+    }
+};
+
+exports.generateQrCode = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const school = await schoolService.findSchoolById(id);
+        if (!school) {
+            return res.status(404).send('School not found');
+        }
+
+        const qrData = `school_id:${id}`;
+        QRCode.toDataURL(qrData, { type: 'image/png' }, (err, url) => {
+            if (err) {
+                console.log('Error generating QR code:', err);
+                return res.status(500).send('Error generating QR code');
+            }
+
+            const img = Buffer.from(url.split(',')[1], 'base64');
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Length': img.length
+            });
+            res.end(img);
+        });
+    } catch (error) {
+        console.log('Error generating QR code:', error);
+        res.status(500).send('Error generating QR code: ' + error.message);
     }
 }; 
