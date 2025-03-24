@@ -107,7 +107,7 @@ exports.generateQrCode = async (req, res) => {
             return res.status(404).send('School not found');
         }
 
-        const qrData = `school_id:${id}`;
+        const qrData = JSON.stringify(school);
         QRCode.toDataURL(qrData, { type: 'image/png' }, (err, url) => {
             if (err) {
                 console.log('Error generating QR code:', err);
