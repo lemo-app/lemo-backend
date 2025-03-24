@@ -27,6 +27,10 @@ const schoolSchema = new mongoose.Schema({
     end_time: {
         type: String, // Consider using a more specific type if needed
         required: false
+    },
+    logo_url: {
+        type: String,
+        required: false
     }
 });
 

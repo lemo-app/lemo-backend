@@ -1,8 +1,8 @@
 const User = require('../models/userModel');
 
-exports.findUserById = async (id) => {
+exports.findUserById = async (id, fieldsToSelect = '') => {
     try {
-        return await User.findById(id);
+        return await User.findById(id).select(fieldsToSelect);
     } catch (error) {
         console.log('Error finding user by ID:', error);
         throw new Error('Database query failed');

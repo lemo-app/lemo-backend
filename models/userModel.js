@@ -70,6 +70,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'School',
         required: false
+    },
+    avatar_url: {
+        type: String,
+        required: false
     }
 });
 

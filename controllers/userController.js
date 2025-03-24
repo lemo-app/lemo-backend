@@ -9,7 +9,7 @@ exports.getUserProfile = async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        const user = await userService.findUserById(decoded.id);
+        const user = await userService.findUserById(decoded.id, '-password');
         if (user) {
             res.json(user);
         } else {
@@ -17,7 +17,7 @@ exports.getUserProfile = async (req, res) => {
         }
     } catch (error) {
         console.log('Error fetching user profile:', error);
-        res.status(401).send('Invalid token');
+        res.status(401).send('Error fetching user profile');
     }
 };
 
@@ -27,14 +27,15 @@ exports.updateUserProfile = async (req, res) => {
         return res.status(401).send('No token provided');
     }
 
-    const { userName, age, gender, type, section, roll_no, full_name, student_id, school } = req.body;
+    const { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url } = req.body;
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id, school });
+        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url });
 
         if (updatedUser) {
-            res.json(updatedUser);
+            const userWithoutPassword = await userService.findUserById(updatedUser.id, '-password');
+            res.json(userWithoutPassword);
         } else {
             res.status(404).send('User not found');
         }
