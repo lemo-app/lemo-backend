@@ -11,6 +11,7 @@ const emailRoutes = require('./routes/emailRoutes'); // Add this line
 const verificationRoutes = require('./routes/verificationRoutes'); // Add this line
 const schoolRoutes = require('./routes/schoolRoutes'); // Add this line
 const sessionRoutes = require('./routes/sessionRoutes'); // Add this line
+const fileRoutes = require('./routes/fileRoutes'); // Add this line
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -47,6 +48,8 @@ app.use('/', verificationRoutes);
 app.use('/schools', schoolRoutes);
 // Use the session routes
 app.use('/sessions', sessionRoutes);
+// Use the file routes
+app.use('/files', fileRoutes);
 
 // Function to start the server
 const startServer = async () => {
