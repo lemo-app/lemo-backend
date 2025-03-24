@@ -64,7 +64,10 @@ exports.login = async (req, res) => {
             token,
             email: user.email,
             userId: user.id,
-            userName: user.userName
+            userName: user.userName,
+            full_name: user.full_name, // Added full_name
+            type: user.type, // Added type
+            avatar_url: user.avatar_url // Added avatar_url
         });
     } catch (error) {
         console.log('Error logging in:', error);
