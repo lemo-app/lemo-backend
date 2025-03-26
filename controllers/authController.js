@@ -24,7 +24,7 @@ exports.googleCallback = async (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-    const { email, type } = req.body;
+    const { email, type, job_title } = req.body;
 
     const temp_password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     
@@ -33,7 +33,7 @@ exports.signup = async (req, res) => {
     }
 
     try {
-        const newUser = await authService.createUser(email, temp_password, type);
+        const newUser = await authService.createUser(email, temp_password, type, job_title);
         const verificationLink = process.env.FRONTEND_VERIFICATION_URL + '/verify-account?email=' + email;
         const mailBody = `Hey ${type}! Welcome to Lemoapp! Follow these instructions to verify your email! Your temporary password is ${temp_password}. Click this link to verify your email: ${verificationLink}`;
 
@@ -49,6 +49,7 @@ exports.signup = async (req, res) => {
             userId: newUser.id,
             userName: newUser.userName,
             type: newUser.type,
+            job_title: newUser.job_title,
             verificationEmail: mailBody
         });
     } catch (error) {

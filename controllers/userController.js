@@ -10,6 +10,7 @@ exports.getUserProfile = async (req, res) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
         const user = await userService.findUserById(decoded.id, '-password');
+        console.log(user.job_title);
         if (user) {
             res.json(user);
         } else {

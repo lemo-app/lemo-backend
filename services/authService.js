@@ -2,13 +2,13 @@ const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.createUser = async (email, password, type) => {
+exports.createUser = async (email, password, type, job_title) => {
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             throw new Error('Email already exists');
         }
-        const newUser = new User({ email, password, type });
+        const newUser = new User({ email, password, type, job_title });
         await newUser.save();
         return newUser;
     } catch (error) {
