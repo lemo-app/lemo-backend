@@ -4,6 +4,7 @@ const { QRCodeStyling } = require('qr-code-styling/lib/qr-code-styling.common.js
 const nodeCanvas = require('canvas');
 const { JSDOM } = require('jsdom');
 const fs = require('fs');
+const fileService = require('../services/fileService');
 
 exports.createSchool = async (req, res) => {
     const { school_name, address, contact_number, description, start_time, end_time, logo_url } = req.body;
@@ -114,7 +115,7 @@ exports.generateQrCode = async (req, res) => {
             width: 300,
             height: 300,
             data: JSON.stringify(school),
-            image: school.logo_url, // Ensure this URL is valid and accessible
+            image: school.logo_url,
             dotsOptions: {
                 color: "#4267b2",
                 type: "rounded"
@@ -129,8 +130,8 @@ exports.generateQrCode = async (req, res) => {
         };
 
         const qrCodeImage = new QRCodeStyling({
-            jsdom: JSDOM, // this is required
-            nodeCanvas, // this is required
+            jsdom: JSDOM,
+            nodeCanvas,
             ...qrCodeOptions,
             imageOptions: {
                 saveAsBlob: true,
@@ -140,15 +141,21 @@ exports.generateQrCode = async (req, res) => {
             },
         });
 
-        qrCodeImage.getRawData("png").then((buffer) => {
-            res.writeHead(200, {
-                'Content-Type': 'image/png',
-                'Content-Length': buffer.length
-            });
-            res.end(buffer);
-        }).catch((err) => {
-            console.log('Error generating QR code:', err);
-            res.status(500).send('Error generating QR code');
+        const buffer = await qrCodeImage.getRawData("png");
+
+        // Create a file-like object for S3 upload
+        const file = {
+            originalname: `qr-code-${id}.png`,
+            buffer: buffer,
+            mimetype: 'image/png'
+        };
+
+        // Upload to S3
+        const qrCodeUrl = await fileService.uploadFileToS3(file);
+
+        res.json({
+            status: 'success',
+            qr_code_url: qrCodeUrl
         });
     } catch (error) {
         console.log('Error generating QR code:', error);
