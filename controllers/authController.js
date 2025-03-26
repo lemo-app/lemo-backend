@@ -1,6 +1,8 @@
 const authService = require('../services/authService');
 const jwt = require('jsonwebtoken');
 const emailService = require('../services/emailService');
+const dotenv = require('dotenv');
+dotenv.config();
 
 exports.googleCallback = async (req, res) => {
     try {
@@ -36,7 +38,7 @@ exports.signup = async (req, res) => {
         const mailBody = `Hey ${type}! Welcome to Lemoapp! Follow these instructions to verify your email! Your temporary password is ${temp_password}. Click this link to verify your email: ${verificationLink}`;
 
         // Send verification email
-        await emailService.sendEmail(email, mailBody);
+        await emailService.sendEmail(email, "Welcome to Lemoapp! Verify your email", mailBody);
 
         const jwtToken = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET || 'your_jwt_secret');
         res.status(201).json({

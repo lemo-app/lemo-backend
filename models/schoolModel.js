@@ -21,18 +21,22 @@ const schoolSchema = new mongoose.Schema({
         trim: true
     },
     start_time: {
-        type: String, // Consider using a more specific type if needed
+        type: Date, // Changed to Date type for ISO format
         required: false
     },
     end_time: {
-        type: String, // Consider using a more specific type if needed
+        type: Date, // Changed to Date type for ISO format
         required: false
     },
     logo_url: {
         type: String,
         required: false
+    },
+    qr_url: {
+        type: String,
+        required: false
     }
-});
+}, { timestamps: true });
 
 const School = mongoose.model('School', schoolSchema);
 

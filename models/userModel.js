@@ -74,8 +74,12 @@ const userSchema = new mongoose.Schema({
     avatar_url: {
         type: String,
         required: false
+    },
+    job_title: {
+        type: String,
+        required: false
     }
-});
+}, { timestamps: true });
 
 // Hash the password before saving the user model
 userSchema.pre('save', async function(next) {
