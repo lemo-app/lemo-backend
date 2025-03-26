@@ -51,6 +51,7 @@ exports.getAllUsers = async (query) => {
         };
 
         const users = await User.find(searchQuery)
+            .select('-password')
             .sort(sortOptions)
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
