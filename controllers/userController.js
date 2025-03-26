@@ -27,11 +27,11 @@ exports.updateUserProfile = async (req, res) => {
         return res.status(401).send('No token provided');
     }
 
-    const { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url } = req.body;
+    const { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url, job_title } = req.body;
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
-        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url });
+        const updatedUser = await userService.updateUser(decoded.id, { userName, age, gender, type, section, roll_no, full_name, student_id, school, avatar_url, job_title });
 
         if (updatedUser) {
             const userWithoutPassword = await userService.findUserById(updatedUser.id, '-password');
