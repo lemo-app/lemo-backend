@@ -35,6 +35,10 @@ const schoolSchema = new mongoose.Schema({
     qr_url: {
         type: String,
         required: false
+    },
+    vpn_config_url: {
+        type: String,
+        required: false
     }
 }, { timestamps: true });
 

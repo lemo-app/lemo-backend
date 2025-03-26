@@ -45,3 +45,19 @@ exports.updateUserProfile = async (req, res) => {
         res.status(401).send('Invalid token');
     }
 };
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const { users, totalUsers } = await userService.getAllUsers(req.query);
+        res.json({
+            status: 'success',
+            data: {
+                users,
+                totalUsers
+            }
+        });
+    } catch (error) {
+        console.log('Error fetching users:', error);
+        res.status(400).send('Error fetching users: ' + error.message);
+    }
+};

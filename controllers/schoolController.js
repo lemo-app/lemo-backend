@@ -7,10 +7,10 @@ const fs = require('fs');
 const fileService = require('../services/fileService');
 
 exports.createSchool = async (req, res) => {
-    const { school_name, address, contact_number, description, start_time, end_time, logo_url } = req.body;
+    const { school_name, address, contact_number, description, start_time, end_time, logo_url, vpn_config_url } = req.body;
 
     try {
-        const newSchool = await schoolService.createSchool({ school_name, address, contact_number, description, start_time, end_time, logo_url });
+        const newSchool = await schoolService.createSchool({ school_name, address, contact_number, description, start_time, end_time, logo_url, vpn_config_url });
         res.status(201).json({
             status: 'success',
             message: 'School created successfully',
@@ -160,5 +160,21 @@ exports.generateQrCode = async (req, res) => {
     } catch (error) {
         console.log('Error generating QR code:', error);
         res.status(500).send('Error generating QR code: ' + error.message);
+    }
+};
+
+exports.getAllSchools = async (req, res) => {
+    try {
+        const { schools, totalSchools } = await schoolService.getAllSchools(req.query);
+        res.json({
+            status: 'success',
+            data: {
+                schools,
+                totalSchools
+            }
+        });
+    } catch (error) {
+        console.log('Error fetching schools:', error);
+        res.status(400).send('Error fetching schools: ' + error.message);
     }
 }; 

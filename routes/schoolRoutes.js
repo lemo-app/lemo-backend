@@ -8,5 +8,6 @@ router.put('/:id', schoolController.updateSchool);
 router.delete('/:id', schoolController.deleteSchool);
 router.post('/connect', schoolController.connectUserToSchool);
 router.get('/generate-qr/:id', schoolController.generateQrCode);
+router.get('/', schoolController.getAllSchools);
 
 module.exports = router; 

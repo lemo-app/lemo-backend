@@ -36,4 +36,36 @@ exports.deleteSchool = async (id) => {
         console.log('Error deleting school:', error);
         throw new Error('Database deletion failed');
     }
+};
+
+exports.getAllSchools = async (query) => {
+    try {
+        const { search, sortBy, order = 'asc', page = 1, limit = 10 } = query;
+        const sortOptions = {};
+
+        if (sortBy) {
+            sortOptions[sortBy] = order === 'asc' ? 1 : -1;
+        }
+
+        const searchQuery = search
+            ? {
+                  $or: [
+                      { school_name: { $regex: search, $options: 'i' } },
+                      { address: { $regex: search, $options: 'i' } }
+                  ]
+              }
+            : {};
+
+        const schools = await School.find(searchQuery)
+            .sort(sortOptions)
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+
+        const totalSchools = await School.countDocuments(searchQuery);
+
+        return { schools, totalSchools };
+    } catch (error) {
+        console.log('Error fetching schools:', error);
+        throw new Error('Database query failed');
+    }
 }; 
