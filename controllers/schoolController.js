@@ -114,7 +114,7 @@ exports.generateQrCode = async (req, res) => {
         const qrCodeOptions = {
             width: 300,
             height: 300,
-            data: JSON.stringify(school),
+            data: JSON.stringify({ school_id: school.id }),
             image: school.logo_url,
             dotsOptions: {
                 color: "#4267b2",
