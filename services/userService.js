@@ -64,3 +64,12 @@ exports.getAllUsers = async (query) => {
         throw new Error('Database query failed');
     }
 };
+
+exports.deleteUser = async (id) => {
+    try {
+        return await User.findByIdAndDelete(id);
+    } catch (error) {
+        console.log('Error deleting user:', error);
+        throw new Error('Database delete failed');
+    }
+};
