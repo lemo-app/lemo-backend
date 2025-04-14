@@ -2,7 +2,7 @@ const User = require('../models/userModel');
 
 exports.findUserById = async (id, fieldsToSelect = '') => {
     try {
-        return await User.findById(id).select(fieldsToSelect);
+        return await User.findById(id).select(fieldsToSelect).populate('school');
     } catch (error) {
         console.log('Error finding user by ID:', error);
         throw new Error('Database query failed');
@@ -20,7 +20,7 @@ exports.updateUser = async (id, updateData) => {
 
 exports.findUserByEmail = async (email) => {
     try {
-        return await User.findOne({ email });
+        return await User.findOne({ email }).populate('school');
     } catch (error) {
         console.log('Error finding user by email:', error);
         throw new Error('Database query failed');
@@ -54,6 +54,7 @@ exports.getAllUsers = async (query) => {
             .select('-password')
             .sort(sortOptions)
             .skip((page - 1) * limit)
+            .populate('school')
             .limit(parseInt(limit));
 
         const totalUsers = await User.countDocuments(searchQuery);
