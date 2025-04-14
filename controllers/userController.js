@@ -1,5 +1,6 @@
 const userService = require('../services/userService');
 const jwt = require('jsonwebtoken');
+const emailService = require('../services/emailService');
 
 exports.getUserProfile = async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -97,3 +98,52 @@ exports.deleteUserById = async (req, res) => {
         res.status(400).send('Error deleting user: ' + error.message);
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body; // Assuming the email is sent in the request body
+
+    try {
+        // Logic to generate a password reset token and send it via email
+        const user = await userService.findUserByEmail(email);
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        const resetToken = user.generatePasswordResetToken(); // You need to implement this method in the user model
+        await emailService.sendEmail(user.email, 'Password Reset', `Your reset token is: ${resetToken}`);
+
+        res.status(200).json({ status: 'success', message: 'Password reset link sent to your email', token: resetToken });
+    } catch (error) {
+        console.log('Error in forgot password:', error);
+        res.status(500).json({ status: 'error', message: 'Error processing request' });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+        return res.status(400).send('Token and new password are required');
+    }
+
+    try {
+        // Verify the token and get the user ID
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret');
+        const user = await userService.findUserById(decoded.id);
+
+        if (!user) {
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        // Update the user's password
+        user.password = newPassword; // Ensure the password is hashed in the user model
+        await user.save();
+
+        res.status(200).json({ status: 'success', message: 'Password has been reset successfully' });
+    } catch (error) {
+        console.log('Error resetting password:', error);
+        res.status(500).send('Error processing request');
+    }
+};
+
+
