@@ -120,7 +120,7 @@ exports.signup = async (req, res) => {
         });
     } catch (error) {
         console.log('Error creating user:', error);
-        res.status(400).send('Error creating user: ' + error.message);
+        res.status(400).json({ status: 'error', message: 'Error creating user: ' + error.message });
     }
 };
 
@@ -140,6 +140,6 @@ exports.login = async (req, res) => {
         });
     } catch (error) {
         console.log('Error logging in:', error);
-        res.status(400).send('Error logging in: ' + error.message);
+        res.status(400).json({ status: 'error', message: 'Error logging in: ' + error.message });
     }
 };

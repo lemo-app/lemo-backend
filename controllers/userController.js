@@ -120,10 +120,10 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body;
+    const { token, new_password } = req.body;
 
-    if (!token || !newPassword) {
-        return res.status(400).send('Token and new password are required');
+    if (!token || !new_password) {
+        return res.status(400).json({ status: 'error', message: 'Token and new password are required' });
     }
 
     try {
@@ -136,7 +136,7 @@ exports.resetPassword = async (req, res) => {
         }
 
         // Update the user's password
-        user.password = newPassword; // Ensure the password is hashed in the user model
+        user.password = new_password; // Ensure the password is hashed in the user model
         await user.save();
 
         res.status(200).json({ status: 'success', message: 'Password has been reset successfully' });
