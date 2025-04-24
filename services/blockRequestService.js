@@ -40,7 +40,20 @@ exports.deleteBlockRequest = async (id) => {
 
 exports.getAllBlockRequests = async (query) => {
     try {
-        return await BlockRequest.find(query).populate('user_id school_id');
+        const filter = {};
+        if (query.status) {
+            filter.status = query.status;
+        }
+        if (query.school) {
+            filter.school = query.school;
+        }
+
+        const sort = {};
+        if (query.sortBy) {
+            sort[query.sortBy] = query.order === 'asc' ? 1 : -1;
+        }
+
+        return await BlockRequest.find(filter).populate('user school').sort(sort);
     } catch (error) {
         console.log('Error fetching block requests:', error);
         throw new Error('Database query failed');

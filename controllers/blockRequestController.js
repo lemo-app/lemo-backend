@@ -70,8 +70,10 @@ exports.deleteBlockRequest = async (req, res) => {
 };
 
 exports.getAllBlockRequests = async (req, res) => {
+    const { status, school, sort } = req.query;
+
     try {
-        const blockRequests = await blockRequestService.getAllBlockRequests(req.query);
+        const blockRequests = await blockRequestService.getAllBlockRequests({ status, school, sort });
         res.json({
             status: 'success',
             data: blockRequests
