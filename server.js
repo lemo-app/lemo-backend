@@ -5,6 +5,9 @@ const session = require('express-session');
 const connectDB = require('./utils/db'); // Import the database connection function
 require('dotenv').config();
 require('./utils/passport-setup'); // Import the passport setup
+
+
+// Import the routes
 const authRoutes = require('./routes/authRoutes'); // Import the auth routes
 const userRoutes = require('./routes/userRoutes'); // Add this line
 const emailRoutes = require('./routes/emailRoutes'); // Add this line
@@ -13,6 +16,9 @@ const schoolRoutes = require('./routes/schoolRoutes'); // Add this line
 const sessionRoutes = require('./routes/sessionRoutes'); // Add this line
 const fileRoutes = require('./routes/fileRoutes'); // Add this line
 const blockRequestRoutes = require('./routes/blockRequestRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+
+
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -53,7 +59,8 @@ app.use('/sessions', sessionRoutes);
 app.use('/files', fileRoutes);
 // Use the block request routes
 app.use('/block-requests', blockRequestRoutes);
-
+// Use the dashboard routes
+app.use('/dashboard', dashboardRoutes);
 // Function to start the server
 const startServer = async () => {
   try {
