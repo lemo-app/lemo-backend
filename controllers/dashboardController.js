@@ -202,7 +202,7 @@ exports.getViolations = async (req, res) => {
             { $match: matchCriteria },
             {
                 $group: {
-                    _id: '$student',
+                    _id: '$student', // Group by student ID
                     early_leaves: { $sum: { $cond: [{ $eq: ['$early_leave', true] }, 1, 0] } },
                     tardy: { $sum: { $cond: [{ $eq: ['$tardy', true] }, 1, 0] } }
                 }
@@ -210,19 +210,23 @@ exports.getViolations = async (req, res) => {
             {
                 $lookup: {
                     from: 'users', // Assuming the user model is named 'User'
-                    localField: '_id',
-                    foreignField: '_id',
+                    localField: '_id', // This is the student ID from the session
+                    foreignField: '_id', // This is the student ID in the User model
                     as: 'student_info'
                 }
             },
             {
-                $unwind: '$student_info'
+                $unwind: {
+                    path: '$student_info',
+                    preserveNullAndEmptyArrays: true // Preserve sessions without matching user
+                }
             },
             {
                 $project: {
                     _id: 0,
-                    student_name: { $concat: ['$student_info.full_name', ''] }, // Assuming full_name is the field for student name
-                    student_id: '$student_info.student_id', // Assuming student_id is a field in the User model
+                    student_name: '$student_info.full_name', // Get the student's full name
+                    student_id: '$student_info.student_id', // Get the student's ID
+                    user_id: '$_id', // Include the user ID (student ID)
                     early_leaves: 1,
                     tardy: 1,
                     total_violations: { $add: ['$early_leaves', '$tardy'] }
@@ -235,8 +239,9 @@ exports.getViolations = async (req, res) => {
         // Format the output with rank
         const formattedViolations = violations.map((violation, index) => ({
             rank: index + 1,
-            student_name: violation.student_name,
-            student_id: violation.student_id,
+            student_name: violation.student_name || 'Unknown', // Handle cases where name might be missing
+            student_id: violation.student_id || 'N/A', // Handle cases where student_id might be missing
+            user_id: violation.user_id, // Include user_id
             early_leaves: violation.early_leaves,
             tardy: violation.tardy
         }));
